@@ -1,49 +1,89 @@
-# 🛡️ NutriShield - AI-Powered Allergen Detection System
+# 🛡️ NutriShield: AI-Powered Allergen Defense
 
-**NutriShield** is a comprehensive backend system designed to ensure food safety for individuals with allergies. It combines **Computer Vision**, **Generative AI**, and **Real-time Market Data** to detect allergens and suggest instant, purchasable alternatives.
+**NutriShield** is a comprehensive full-stack health-tech application designed to protect individuals from accidental allergen exposure. By combining Computer Vision, Generative AI, and real-time product databases, NutriShield analyzes food labels to detect hidden triggers and suggests safe, accessible alternatives.
 
 ---
 
-## 🚀 Key Features
+## 👥 Meet the Team & Contributions
 
-### 1. 🔐 Secure Authentication
--   **Split Architecture**: Dedicated Signup and Login flows.
--   **Enterprise Security**: Passwords are **salted and hashed using Bcrypt** ($2b$).
--   **Duplicate Protection**: Prevents multiple accounts with the same email.
+| Member | Role | Key Working & Implementation |
+| :--- | :--- | :--- |
+| **Shagun Tiwari** | **Lead Backend & OCR Engineer** | Developed the dual-engine OCR pipeline and managed full system integration within the Flask framework. |
+| **Sagun Yadav** | **Frontend Developer** | Built the responsive user interface and dashboard using modern CSS/JS for a seamless user experience. |
+| **Sanya Dubey** | **Security & Database Lead** | Orchestrated the Supabase schema and implemented secure authentication using Bcrypt password hashing. |
+| **Saumya Mishra** | **Product Strategist** | Engineered the safe alternative recommendation engine with automated Blinkit purchase integration. |
+| **Saumya Singh** | **Barcode Logic Engineer** | Implemented image-enhanced barcode decoding and integrated the OpenFoodFacts API for metadata retrieval. |
 
-### 2. 👁️ Advanced Hybrid OCR Engine
--   **Stage 1: Computer Vision (OpenCV)**:
-    -   *Grayscale Conversion*: Removes color noise.
-    -   *Upscaling*: 2x resizing to enhance small text.
-    -   *Otsu's Binarization*: Converts image to strict Black/White for high contrast.
--   **Stage 2: Optical Character Recognition**: Tesseract attempts to read the clean image.
--   **Stage 3: AI Fail-Safe**: If Tesseract fails, the system auto-switches to **Google Gemini 2.5 Flash** for deep-learning extraction.
+---
 
-### 3. 🛒 Smart Recommendations (Blinkit Integration)
--   If an unsafe product is found, the system identifies the specific allergen (e.g., "Milk").
--   It queries a knowledge base of real market substitutes (e.g., "Sofit Soya Milk").
--   **Dynamic Linking**: Generates direct **Blinkit search links**, allowing the user to buy the safe alternative instantly.
+## 🌟 Key Features
+
+* **🔐 Secure Ecosystem:** A robust authentication system utilizing **Bcrypt** for password hashing and **Supabase** for secure cloud storage of user profiles and history.
+* **📸 Advanced OCR Pipeline:** Uses **OpenCV** for image preprocessing (Denoising, Otsu’s Thresholding) to enhance text clarity before extraction via **Tesseract**.
+* **🧠 AI Fallback Logic:** Automatically triggers **Google Gemini 2.5 Flash** if standard OCR confidence is low, ensuring high-accuracy ingredient reading even from blurry images.
+* **🔍 Barcode Intelligence:** Decodes EAN-13 barcodes to instantly pull ingredient lists and brand data from global databases.
+* **🛒 Smart Replacements:** Identifies unsafe ingredients and immediately suggests allergen-free alternatives with direct shopping links to **Blinkit**.
 
 ---
 
 ## 🛠️ Tech Stack
 
--   **Core**: Python 3.11, Flask (REST API)
--   **Database**: Supabase (PostgreSQL)
--   **AI & Vision**: Google Gemini 2.5 Flash, OpenCV (`cv2`), Tesseract OCR
--   **Security**: Bcrypt
--   **External APIs**: OpenFoodFacts, Blinkit (Deep links)
+### **Backend**
+* **Framework:** Flask (Python)
+* **Database:** Supabase (PostgreSQL)
+* **AI/ML:** Google Generative AI (Gemini API)
+* **Computer Vision:** OpenCV (`opencv-python`), Pytesseract, Pyzbar
+
+### **Frontend**
+* **Languages:** HTML5, CSS3, JavaScript (ES6+)
+* **Styling:** Poppins Typography, FontAwesome Icons
 
 ---
 
-## ⚙️ Installation & Setup
+## 🏗️ Project Structure
 
-### 1. Prerequisites
--   Python 3.10 or higher.
--   [Tesseract OCR Installed](https://github.com/UB-Mannheim/tesseract/wiki) (Note the path).
--   [Visual C++ Redistributable 2013](https://www.microsoft.com/en-us/download/details.aspx?id=40784) (Required for Barcode engine on Windows).
+Based on the modular architecture of the repository:
 
-### 2. Install Libraries
-Open your terminal in this folder and run:
-```bash
+├── services/
+│   ├── allergen_service.py   # Synonym matching & safety logic
+│   ├── ocr_service.py        # OpenCV pipeline & Gemini integration
+│   ├── product_service.py    # Barcode decoding & OpenFoodFacts API
+├── utils/
+│   └── db.py                 # Supabase client & environment config
+├── app.py                    # Flask API routes & Authentication logic
+├── frontend.html             # Single-page application interface
+├── requirements.txt          # Project dependencies
+└── .gitignore                # Version control exclusions 
+
+---
+
+## 🚀 Getting Started
+
+### 1. **Prerequisites**
+Python 3.10+
+Tesseract OCR installed on your system
+A Supabase project and Google Gemini API Key
+
+
+### 2. **Installation**
+
+Clone the repository:
+git clone [https://github.com/your-username/NutriShield.git](https://github.com/your-username/NutriShield.git)
+cd NutriShield
+
+Install Dependencies:
 pip install -r requirements.txt
+Configure Environment: Create a .env file in the root and add your keys:
+
+*Code snippet*
+SUPABASE_URL=your_url
+SUPABASE_KEY=your_key
+GEMINI_API_KEY=your_gemini_key
+TESSERACT_CMD=C:\Program Files\Tesseract-OCR\tesseract.exe
+
+
+### 3. **Running the Application**
+
+Start the Flask backend: python app.py
+Open frontend.html in your preferred browser.
+Developed by Team NutriShield Empowering safer food choices through Artificial Intelligence.
