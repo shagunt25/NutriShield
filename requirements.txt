@@ -1,0 +1,12 @@
+bcrypt
+Flask
+flask_cors
+google_generativeai
+numpy
+opencv_python
+Pillow
+pytesseract
+python_dotenv
+pyzbar
+requests
+supabase

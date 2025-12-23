@@ -1,0 +1,16 @@
+# Secret Keys
+.env
+
+# Virtual Environment (the 100MB+ folder)
+venv/
+
+# Python Cache
+__pycache__/
+*.pyc
+
+# VS Code settings
+.vscode/
+
+# Screenshots/Temporary images
+ss/
+test images/

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriShield | AI Allergen Defense</title>
+    <!-- Fonts & Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #10b981; /* Emerald Green */
+            --primary-dark: #059669;
+            --accent: #3b82f6; /* Blue */
+            --danger: #ef4444; /* Red */
+            --bg: #f3f4f6;
+            --text: #1f2937;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        /* --- Header --- */
+        .navbar {
+            background: var(--white);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .user-status {
+            font-size: 0.9rem;
+            color: #6b7280;
+            background: #f9fafb;
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .btn-logout {
+            background: #fee2e2;
+            color: var(--danger);
+            border: none;
+            padding: 5px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: none; /* Hidden initially */
+            transition: 0.2s;
+        }
+        .btn-logout:hover { background: #fecaca; }
+
+        /* --- Layout --- */
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        /* --- Cards --- */
+        .card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .card:hover { transform: translateY(-2px); }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #f3f4f6;
+            padding-bottom: 1rem;
+        }
+
+        .card-header h2 { margin: 0; font-size: 1.25rem; color: var(--text); }
+        .card-header i { font-size: 1.25rem; color: var(--primary); }
+
+        /* --- Forms --- */
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; font-weight: 600; color: #4b5563; }
+        input {
+            width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;
+            box-sizing: border-box; transition: border-color 0.2s;
+        }
+        input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); }
+
+        /* --- Buttons --- */
+        .btn {
+            width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600;
+            cursor: pointer; transition: background 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px;
+        }
+        .btn-primary { background: var(--primary); color: var(--white); }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-secondary { background: var(--accent); color: var(--white); }
+        .btn-secondary:hover { background: #2563eb; }
+        
+        /* Back Button Style */
+        .btn-back {
+            background: #e5e7eb;
+            color: #374151;
+            margin-top: 10px;
+        }
+        .btn-back:hover { background: #d1d5db; }
+
+        /* --- File Upload --- */
+        .file-upload {
+            border: 2px dashed #d1d5db; border-radius: 8px; padding: 2rem; text-align: center; cursor: pointer;
+            margin-bottom: 1rem; transition: border-color 0.2s;
+        }
+        .file-upload:hover { border-color: var(--primary); }
+        .file-upload i { font-size: 2rem; color: #9ca3af; margin-bottom: 0.5rem; }
+        .file-upload p { margin: 0; color: #6b7280; font-size: 0.9rem; }
+
+        /* --- Results --- */
+        .result-box {
+            background: #1f2937; color: #10b981; padding: 1.5rem; border-radius: 8px; font-family: 'Courier New', monospace;
+            margin-top: 1rem; display: none; white-space: pre-wrap;
+        }
+
+        /* --- Notifications --- */
+        #notification {
+            position: fixed; top: 20px; right: 20px; padding: 1rem 1.5rem; border-radius: 8px; color: white;
+            font-weight: 600; display: none; z-index: 1000; box-shadow: 0 4px 6px rgba(0,0,0,0.1); animation: slideIn 0.3s ease-out;
+        }
+        .notif-success { background: var(--primary); }
+        .notif-error { background: var(--danger); }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+        .hidden { display: none; }
+        .dashboard-section { animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    </style>
+</head>
+<body>
+
+    <div id="notification"></div>
+
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-shield-alt"></i> NutriShield
+        </div>
+        <div class="user-controls">
+            <div class="user-status" id="user-status">
+                <i class="fas fa-user-circle"></i> Guest
+            </div>
+            <button id="logout-btn" class="btn-logout" onclick="doLogout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <!-- === AUTHENTICATION SECTION === -->
+        <div id="auth-section" class="grid">
+            <div class="card">
+                <div class="card-header"><i class="fas fa-user-plus"></i><h2>New Account</h2></div>
+                <div class="form-group"><label>Full Name</label><input type="text" id="su-name" placeholder="John Doe"></div>
+                <div class="form-group"><label>Email</label><input type="email" id="su-email" placeholder="john@example.com"></div>
+                <div class="form-group"><label>Password</label><input type="password" id="su-pass" placeholder="••••••••"></div>
+                <div class="form-group"><label>Allergens</label><input type="text" id="su-allergens" placeholder="Peanut, Milk, Soy..."></div>
+                <button class="btn btn-primary" onclick="doSignup()"><i class="fas fa-check-circle"></i> Create Profile</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><i class="fas fa-sign-in-alt"></i><h2>Member Login</h2></div>
+                <div class="form-group"><label>Email</label><input type="email" id="li-email" placeholder="john@example.com"></div>
+                <div class="form-group"><label>Password</label><input type="password" id="li-pass" placeholder="••••••••"></div>
+                <button class="btn btn-secondary" onclick="doLogin()"><i class="fas fa-arrow-right"></i> Secure Login</button>
+            </div>
+        </div>
+
+        <!-- === DASHBOARD SECTION (Hidden Initially) === -->
+        <div id="dashboard-section" class="hidden dashboard-section">
+            <div style="margin-bottom: 2rem; text-align: center;">
+                <h1 style="color: var(--primary-dark);">Welcome to your Safety Hub</h1>
+                <p style="color: #6b7280;">Select a scanning method below.</p>
+            </div>
+
+            <div class="grid">
+                <!-- Barcode Card -->
+                <div class="card">
+                    <div class="card-header"><i class="fas fa-barcode"></i><h2>Scan Barcode</h2></div>
+                    <p style="color: #6b7280; font-size: 0.9rem;">Upload a clear photo of the product barcode (EAN-13).</p>
+                    <input type="file" id="barcode-file" accept="image/*" class="hidden" onchange="updateFileName('barcode')">
+                    <label for="barcode-file" class="file-upload"><i class="fas fa-cloud-upload-alt"></i><p id="barcode-file-name">Click to upload image</p></label>
+                    <button class="btn btn-primary" onclick="testBarcode()"><i class="fas fa-search"></i> Analyze Product</button>
+                    
+                    <!-- Back Button (Hidden by default, shown after scan) -->
+                    <button id="barcode-back" class="btn btn-back hidden" onclick="resetCard('barcode')"><i class="fas fa-undo"></i> Scan Another</button>
+                    
+                    <div id="barcode-result" class="result-box"></div>
+                </div>
+
+                <!-- OCR Card -->
+                <div class="card">
+                    <div class="card-header"><i class="fas fa-file-alt"></i><h2>Read Ingredients</h2></div>
+                    <p style="color: #6b7280; font-size: 0.9rem;">Upload a clear photo of the ingredient label text.</p>
+                    <input type="file" id="ocr-file" accept="image/*" class="hidden" onchange="updateFileName('ocr')">
+                    <label for="ocr-file" class="file-upload"><i class="fas fa-camera"></i><p id="ocr-file-name">Click to upload image</p></label>
+                    <button class="btn btn-secondary" onclick="testOCR()"><i class="fas fa-magic"></i> Scan Text (AI)</button>
+                    
+                    <!-- Back Button -->
+                    <button id="ocr-back" class="btn btn-back hidden" onclick="resetCard('ocr')"><i class="fas fa-undo"></i> Scan Another</button>
+                    
+                    <div id="ocr-result" class="result-box"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        const API_URL = "http://127.0.0.1:5000";
+        let savedUserId = "";
+
+        // --- UI Logic ---
+        function showNotification(msg, type) {
+            const el = document.getElementById("notification");
+            el.innerText = msg;
+            el.className = type === 'success' ? 'notif-success' : 'notif-error';
+            el.style.display = "block";
+            setTimeout(() => { el.style.display = "none"; }, 3000);
+        }
+
+        function updateFileName(type) {
+            const input = document.getElementById(type + "-file");
+            const label = document.getElementById(type + "-file-name");
+            if(input.files.length > 0) {
+                label.innerText = input.files[0].name;
+                label.style.color = "var(--primary)";
+            }
+        }
+
+        function switchView(isLoggedIn) {
+            if(isLoggedIn) {
+                document.getElementById("auth-section").classList.add("hidden");
+                document.getElementById("dashboard-section").classList.remove("hidden");
+                document.getElementById("logout-btn").style.display = "block";
+            } else {
+                document.getElementById("auth-section").classList.remove("hidden");
+                document.getElementById("dashboard-section").classList.add("hidden");
+                document.getElementById("logout-btn").style.display = "none";
+                document.getElementById("user-status").innerHTML = `<i class="fas fa-user-circle"></i> Guest`;
+            }
+        }
+
+        function doLogout() {
+            savedUserId = "";
+            showNotification("Logged out successfully", "success");
+            switchView(false);
+            // Clear inputs
+            document.getElementById("li-email").value = "";
+            document.getElementById("li-pass").value = "";
+        }
+
+        function resetCard(type) {
+            // Hide result, hide back button, clear file input text
+            document.getElementById(type + "-result").style.display = "none";
+            document.getElementById(type + "-back").classList.add("hidden");
+            document.getElementById(type + "-file-name").innerText = "Click to upload image";
+            document.getElementById(type + "-file-name").style.color = "#6b7280";
+            document.getElementById(type + "-file").value = "";
+        }
+
+        // --- AUTH API ---
+        async function doSignup() {
+            const btn = document.querySelector(".btn-primary");
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Creating...`;
+
+            const data = {
+                full_name: document.getElementById("su-name").value,
+                email: document.getElementById("su-email").value,
+                password: document.getElementById("su-pass").value
+            };
+
+            try {
+                const res = await fetch(`${API_URL}/api/auth/signup`, {
+                    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data)
+                });
+                const json = await res.json();
+                if (!res.ok) throw new Error(json.error);
+
+                savedUserId = json.user_id;
+                const allergens = document.getElementById("su-allergens").value;
+                await fetch(`${API_URL}/api/user/save_allergens`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ user_id: savedUserId, other_allergens_raw: allergens })
+                });
+
+                showNotification("Account Created!", "success");
+                document.getElementById("user-status").innerHTML = `<i class="fas fa-user-check"></i> ${data.full_name}`;
+                switchView(true);
+                
+                // Clear signup form
+                document.getElementById("su-name").value = "";
+                document.getElementById("su-email").value = "";
+                document.getElementById("su-pass").value = "";
+                document.getElementById("su-allergens").value = "";
+
+            } catch (e) { showNotification(e.message, "error"); } 
+            finally { btn.innerHTML = originalText; }
+        }
+
+        async function doLogin() {
+            const btn = document.querySelector(".btn-secondary");
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Logging in...`;
+
+            const data = {
+                email: document.getElementById("li-email").value,
+                password: document.getElementById("li-pass").value
+            };
+
+            try {
+                const res = await fetch(`${API_URL}/api/auth/login`, {
+                    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data)
+                });
+                const json = await res.json();
+                if (!res.ok) throw new Error(json.error);
+
+                savedUserId = json.user_id;
+                showNotification(`Welcome back, ${json.full_name}!`, "success");
+                document.getElementById("user-status").innerHTML = `<i class="fas fa-user-check"></i> ${json.full_name}`;
+                switchView(true);
+
+            } catch (e) { showNotification(e.message, "error"); } 
+            finally { btn.innerHTML = originalText; }
+        }
+
+        // --- SCANNING API ---
+        async function testBarcode() {
+            if(!savedUserId) return showNotification("Please Log In first!", "error");
+            const fileInput = document.getElementById("barcode-file");
+            if(fileInput.files.length === 0) return showNotification("Please select an image first!", "error");
+
+            const resultBox = document.getElementById("barcode-result");
+            resultBox.style.display = "block";
+            resultBox.innerHTML = "🔍 Scanning Barcode... Please wait...";
+
+            const formData = new FormData();
+            formData.append("image", fileInput.files[0]);
+            formData.append("user_id", savedUserId);
+
+            try {
+                const res = await fetch(`${API_URL}/api/scan/barcode`, { method: "POST", body: formData });
+                const json = await res.json();
+                displayResults(json, resultBox);
+                document.getElementById("barcode-back").classList.remove("hidden"); // Show Back Button
+            } catch (e) { resultBox.innerHTML = "Error: " + e; }
+        }
+
+        async function testOCR() {
+            if(!savedUserId) return showNotification("Please Log In first!", "error");
+            const fileInput = document.getElementById("ocr-file");
+            if(fileInput.files.length === 0) return showNotification("Please select an image first!", "error");
+
+            const resultBox = document.getElementById("ocr-result");
+            resultBox.style.display = "block";
+            resultBox.innerHTML = "🧠 AI Analyzing Ingredients... (Takes 5-10s)";
+
+            const formData = new FormData();
+            formData.append("image", fileInput.files[0]);
+            formData.append("user_id", savedUserId);
+
+            try {
+                const res = await fetch(`${API_URL}/api/scan/ocr`, { method: "POST", body: formData });
+                const json = await res.json();
+                displayResults(json, resultBox);
+                document.getElementById("ocr-back").classList.remove("hidden"); // Show Back Button
+            } catch (e) { resultBox.innerHTML = "Error: " + e; }
+        }
+
+        // --- RESULTS ---
+        function displayResults(data, container) {
+            const isSafe = data.safe;
+            const color = isSafe ? "#10b981" : "#ef4444";
+            const icon = isSafe ? "check-circle" : "exclamation-triangle";
+            const badge = isSafe ? "SAFE TO EAT" : "UNSAFE DETECTED";
+
+            let html = `<div style="text-align:center; margin-bottom:10px;">
+                            <i class="fas fa-${icon}" style="font-size:3rem; color:${color};"></i>
+                            <h3 style="color:${color}; margin:10px 0;">${badge}</h3>
+                        </div>`;
+
+            if (data.product) {
+                html += `<strong>Product:</strong> ${data.product.name} (${data.product.brand})<br>`;
+            }
+            
+            if (!isSafe) {
+                html += `<div style="background:#fee2e2; color:#991b1b; padding:10px; border-radius:6px; margin:10px 0;">
+                            <strong>⚠️ Allergens Found:</strong> ${data.allergens_found.join(", ")}
+                         </div>`;
+                         
+                if(data.alternatives && data.alternatives.length > 0) {
+                    html += `<strong>🛒 Safe Alternatives (Buy on Blinkit):</strong><ul style="margin-top:5px; padding-left:20px;">`;
+                    data.alternatives.forEach(alt => {
+                        html += `<li style="margin-bottom:8px;">
+                                    ${alt.name} - <a href="${alt.link}" target="_blank" style="color:#3b82f6; text-decoration:none; font-weight:bold;">Buy Now <i class="fas fa-external-link-alt"></i></a>
+                                 </li>`;
+                    });
+                    html += `</ul>`;
+                }
+            } else {
+                html += `<p>No allergens detected from your profile.</p>`;
+            }
+            container.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
